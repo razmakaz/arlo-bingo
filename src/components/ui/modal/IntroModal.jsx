@@ -56,13 +56,7 @@ export const IntroModal = () => {
       </p>
       <h3>I have questions, where can I get more info?</h3>
       <p>
-        You can find more information about our tracking policy, who made this site,
-        Arlo, the fundraiser, and more on the FAQ page.
-      </p>
-      <hr></hr>
-      <p>
-        Please remember that this is a game and the real winners are the charities
-        that you donate to. They appreciate any and all of your help 💝.
+        You can find more information about this application in the FAQ.
       </p>
     </Modal>
   )
