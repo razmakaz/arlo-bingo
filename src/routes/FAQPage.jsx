@@ -124,12 +124,11 @@ const FAQData = [
     </QuestionSegment>,
     a: <>
       <p>
-        I'm not a perfect developer, so sometimes people might have issues or problems with the cards that 
-        they're assigned or you might just not like the layout.
+        This site was made with Vite, React, Styled Components, and React Icons. I created all of the components
+        myself (with the theme inspired from PrimeReact).
       </p><p>
-        Regardless of the case, you can use this button to reset the all of the data for the site and start over.
+        I've made the source code available publicly, so you can view that <a target="_blank" href="https://github.com/razmakaz/arlo-bingo">here</a>. 
       </p>
-      <Button color="red" onClick={ClearAllData}>Clear Bingo Data</Button>
     </>
   },{
     id: 'win',
