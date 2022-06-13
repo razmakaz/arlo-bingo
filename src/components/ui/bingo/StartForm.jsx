@@ -5,6 +5,7 @@ import { SaveBingoCard } from "../../../tools/DataUtils"
 import { Button } from "../buttons/button"
 
 const Container = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,6 +13,7 @@ const Container = styled.div`
   transition: all 222ms;
   background: var(--maskbg);
   opacity: ${p => p.active ? 1 : 0};
+  z-index: 500;
   pointer-events: ${p => p.active ? 'all' : 'none'};
 `
 
