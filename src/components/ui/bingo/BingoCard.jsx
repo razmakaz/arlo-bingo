@@ -115,9 +115,8 @@ export const BingoCard = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      console.log('Changing Card State');
       setCardState('ready');
-    }, 3000)
+    }, 10)
   }, [])
 
   const cellsLetters = ['B','I','N','G','O']
@@ -126,7 +125,6 @@ export const BingoCard = () => {
   const GetGrid = () => {
     let items = []
     let setup = {...state.bingoCard.bingoCard};
-    console.log(setup);
     for (let i = 0; i <= 5; i++) {
     cellsLetters.forEach((cell, j) => {
         if (i === 0) {
