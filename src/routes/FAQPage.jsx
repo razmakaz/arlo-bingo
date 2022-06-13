@@ -5,6 +5,7 @@ import styled from "styled-components"
 import $ from 'jquery';
 import { Button } from "../components/ui/buttons/button";
 import { ClearAllData } from "../tools/DataUtils";
+import { FaCode } from "react-icons/fa";
 
 const Container = styled.div`
   display: flex;
@@ -116,6 +117,21 @@ const FAQData = [
       </p>
     </>
   },{
+    id: 'how',
+    q: <QuestionSegment>
+      <FaCode size={32} />
+      <span>How did you make this site?</span>
+    </QuestionSegment>,
+    a: <>
+      <p>
+        I'm not a perfect developer, so sometimes people might have issues or problems with the cards that 
+        they're assigned or you might just not like the layout.
+      </p><p>
+        Regardless of the case, you can use this button to reset the all of the data for the site and start over.
+      </p>
+      <Button color="red" onClick={ClearAllData}>Clear Bingo Data</Button>
+    </>
+  },{
     id: 'win',
     q: <QuestionSegment>
       <GiTrophy size={32} />
@@ -168,7 +184,7 @@ const FAQData = [
       </p>
       <Button color="red" onClick={ClearAllData}>Clear Bingo Data</Button>
     </>
-  }
+  },
 ]
 
 export const FAQPage = () => {
