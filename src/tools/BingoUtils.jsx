@@ -12,7 +12,7 @@ export const GenerateNewBingoCard = () => {
     if (cell === 'c3') {
       layout[cell] = {
         name: 'Free Space',
-        shortName: 'Free Space'
+        stamped: false,
       }
       return;
     };
@@ -35,8 +35,8 @@ export const GenerateNewBingoCard = () => {
     predictions.splice(pick, 1);
 
     // Set the pick.
-    let { name, shortName } = pick;
-    layout[cell] = { name, shortName };
+    let { name } = pick;
+    layout[cell] = { name, stamped: false };
   })
 
   return layout;
