@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { BsPersonBoundingBox } from "react-icons/bs";
 import { GiCardJoker, GiSpy, GiTakeMyMoney, GiTrophy } from 'react-icons/gi';
+import { AiFillDislike } from 'react-icons/ai';
 import styled from "styled-components"
 import $ from 'jquery';
 import { Button } from "../components/ui/buttons/button";
 import { ClearAllData } from "../tools/DataUtils";
 import { FaCode } from "react-icons/fa";
+import { BiDonateHeart } from "react-icons/bi";
 
 const Container = styled.div`
   display: flex;
@@ -112,8 +114,8 @@ const FAQData = [
         So, feel free to reach out to me on 
         Twitter: <a target="_blank" href="https://twitter.com/_razmakaz">@_razmakaz</a>
       </p><p>
-        I don't like putting my email out on the internet and I didn't want to write 
-        a server just to handle an email form, so... Twitter. 😁
+        I don't like putting my email out on the internet because spam is a real problem and I didn't 
+        want to write a server just to handle an email form, so... Twitter. 😁
       </p>
     </>
   },{
@@ -127,7 +129,8 @@ const FAQData = [
         This site was made with Vite, React, Styled Components, and React Icons. I created all of the components
         myself (with the theme inspired from PrimeReact).
       </p><p>
-        I've made the source code available publicly, so you can view that <a target="_blank" href="https://github.com/razmakaz/arlo-bingo">here</a>. 
+        I've made the source code available publicly, so you can view 
+        that <a target="_blank" href="https://github.com/razmakaz/arlo-bingo">on Github</a>. 
       </p>
     </>
   },{
@@ -151,9 +154,11 @@ const FAQData = [
     </QuestionSegment>,
     a: <>
       <p>
-        I use Google Tag Manager to track very basic, anonymous engagement statistics like Page Views, 
-        Page Loads, initializations, etc. I don't track any IPs or device IDs. Cards tied to your device 
-        are only stored locally and not sent anywhere.
+        I use Google Analytics to track very basic engagement statistics like the name you enter at the 
+        beginning, Page Views, Page Loads, initializations, clicks on the bingo card, card resets,
+        wins, etc. There are some things that Google tracks automatically that I have no control over, 
+        like what area of the world you're generally in. So if you don't want that tracked, use 
+        a <a target="_blank" href="https://duckduckgo.com/?q=vpn">VPN</a> or <a target="_blank" href="https://duckduckgo.com/?q=i2p">I2P</a>.
       </p>
     </>
   },{
@@ -165,13 +170,13 @@ const FAQData = [
     a: <>
       <p>
         Have fun? Nobody's going to enforce the rules but you'll have to live with yourself knowing 
-        that you cheated at a free community game. 🤷‍♂️
+        that you cheated at a free community game. 😬
       </p>
     </>
   },{
     id: 'renew',
     q: <QuestionSegment>
-      <GiCardJoker size={32} />
+      <AiFillDislike size={32} />
       <span>I don't like my card layout.</span>
     </QuestionSegment>,
     a: <>
@@ -182,6 +187,20 @@ const FAQData = [
         Regardless of the case, you can use this button to reset the all of the data for the site and start over.
       </p>
       <Button color="red" onClick={ClearAllData}>Clear Bingo Data</Button>
+    </>
+  },{
+    id: 'support',
+    q: <QuestionSegment>
+      <BiDonateHeart size={32} />
+      <span>How can I support the developer?</span>
+    </QuestionSegment>,
+    a: <>
+      <p>
+        I accept donations through <a target="_blank" href="https://paypal.me/kazkade">PayPal</a> and
+        through <a target="_blank" href="https://account.venmo.com/u/razmakaz">Venmo</a>. 
+      </p><p>
+        If you <b><i>do</i></b> donate, I'll be eternally grateful and love you forever. As a friend. Probably.
+      </p>
     </>
   },
 ]
