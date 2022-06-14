@@ -1,9 +1,16 @@
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import styled, { css, keyframes } from "styled-components"
 import { AppState } from "../../../App"
 import ArloBadge from '../../../media/images/arlo-badge.svg';
-import StampImage from '../../../media/images/stamp.svg';
+import { SaveBingoCard } from "../../../tools/DataUtils";
 import { Button } from "../buttons/button";
+import useSound from '../../hooks/useSound';
+import StampSound from '../../../media/sounds/TP_Heart.wav';
+import UnstampSound from '../../../media/sounds/TP_ItemMenu_Info_Back.wav';
+import BingoSound from '../../../media/sounds/BOTW_Fanfare_SmallItem.wav';
+import BlackoutSound from '../../../media/sounds/BOTW_Fanfare_HeartContainer.wav'
+import CursorSound from '../../../media/sounds/TP_ItemMenu_Cursor.wav';
+import { BingoWinGrid } from "../../../data/BingoWinGrid";
 
 const Container = styled.div`
   position: absolute;
@@ -68,6 +75,24 @@ const BingoCell = styled.div`
   user-select: none;
 `
 
+const BlackoutAnim = keyframes`
+  0% {
+    transform: scale(1.1) rotateZ(0deg);
+  }
+
+  25% {
+    transform: scale(1.1) rotateZ(12deg);
+  }
+
+  75% {
+    transform: scale(1.1) rotateZ(-12deg);
+  }
+
+  100% {
+    transform: scale(1.1) rotateZ(0deg);
+  }
+`
+
 const BingoCellButton = styled(BingoCell)`
   position: relative;
   cursor: pointer;
@@ -76,12 +101,26 @@ const BingoCellButton = styled(BingoCell)`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: var(${p => p.stamped ? '--green-800' : 'primary-900'});
+  background: var(${p => 
+    p.stamped === 'blackout' ? '--green-700' : 
+    p.stamped === 'bingo' ? '--yellow-700' :
+    p.stamped === 'stamped' ? '--cyan-700' : 
+    '--primary-900'  
+  });
 
   &:hover {
     box-shadow: 0 0 8px var(--primary-800);
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
+
+  &:active {
+    box-shadow: 0 0 8px var(--primary-800);
+    transform: scale(0.9);
+  }
+
+  ${p => p.stamped === 'blackout' && css`
+    animation: ${BlackoutAnim} 1s linear infinite;
+  `}
 `
 
 const BingoHeader = styled(BingoCell)`
@@ -131,31 +170,95 @@ const BadgeBackground = styled.img`
   height: 50%;
 `
 
-const BingoStamp = styled.img`
-  position: absolute;
-  top: -24px; 
-  right:-24px;
-  bottom: -24px;
-  left: -24px;
-  pointer-events: none;
-  filter: blur(1px) grayscale(100%);
-  transform: rotateZ(${p => p.rotation}deg) scale(${p => p.stamped ? 1 : 2});
-  opacity: ${p => p.stamped ? 1 : 0};
-  z-index: 3;
-  transition: all 333ms;
-
-`
-
-
 export const BingoCard = () => {
 
   const [state, setState] = useContext(AppState);
   const [cardState, setCardState] = useState('show');
-  const { bingoCard } = state.bingoCard;
-  console.log(bingoCard);
+
+  const [playStamp] = useSound(StampSound);
+  const [playBingo] = useSound(BingoSound);
+  const [playBlackout] = useSound(BlackoutSound);
+  const [playCursor] = useSound(CursorSound);
+  const [playUnstamp] = useSound(UnstampSound);
 
   const cellsLetters = ['B','I','N','G','O']
   const cellsDataLetters = ['a', 'b', 'c', 'd', 'e'];
+
+  const HandleStamp = (cell, value) => {
+
+    window.dataLayer.push({"bingo_cell_clicked": { value: cell }});
+
+    setState(prev => {
+  
+      // Set the new value.
+      let stx = {...prev};
+      stx.bingoCard.bingoCard[cell].stamped = value;
+      
+      // Play the appropriate sound.
+      if (value) {
+        playStamp();
+      } else {
+        playUnstamp();
+      }
+
+      /**
+       * Check for new bingos.
+       */
+      // Generate a list of current stamped cells.
+      let currentStamps = Object.keys(state.bingoCard.bingoCard).filter(cell => {
+        if (state.bingoCard.bingoCard[cell].stamped) {
+          return cell;
+        }
+      })
+
+      // Iterate through vectors of win layouts.
+      let bingos = []
+
+      // Set up our new bingo trigger to prevent 
+      // trying to play the sound multiple times.
+      Object.keys(BingoWinGrid).forEach(vector => {
+        let win = true;
+        // Check if each of the cells in the win vector.
+        BingoWinGrid[vector].forEach(cell => {
+          if (!currentStamps.includes(cell)) {
+            win = false;
+          }
+        })
+
+        // If there's a bingo, add it to our list.
+        if (win) {
+          // Set the bingo list.
+          bingos.push(vector);
+        }
+
+      })
+
+      // Check if it's a new bingo, if so, play the bingo sound.
+      let newBingo = false;
+      bingos.forEach(bgo => {
+        if (!stx.bingoCard.bingos.includes(bgo)) {
+          if (bgo === 'bo') {
+            playBlackout();
+            window.dataLayer.push({"bingo_blackout": { value: stx.bingoCard.name }});
+            newBingo = false;
+          } else {
+            window.dataLayer.push({"bingo_win": { value: bgo }});
+            newBingo = true;
+          }
+        }
+      })
+      if (newBingo) playBingo();
+
+      stx.bingoCard.bingos = bingos;
+
+      // Finally, save our updated bingo card.
+      SaveBingoCard(stx.bingoCard);
+
+      // Return
+      return stx;    
+    })
+
+  }
 
   const GetGrid = () => {
     let items = []
@@ -165,12 +268,28 @@ export const BingoCard = () => {
         if (i === 0) {
           items.push(<BingoHeader key={cell+i} id={cell}>{cell}</BingoHeader>)
         } else {
-          let randomRotate = Math.floor(Math.random() * (120 - -120 + 1) - -120);
-          let stamped = Math.random() > 0.5;
-          items.push(<BingoCellButton stamped={stamped} key={cell+i} id={cell+i}>
-            {setup[cellsDataLetters[j]+i]?.name}
-            <BingoStamp stamped={stamped} src={StampImage} rotation={randomRotate} />
-          </BingoCellButton>)
+          let cellId = cellsDataLetters[j]+i
+          let status = setup[cellId].stamped ? 'stamped' : 'none';
+          state.bingoCard.bingos?.forEach(bgo => {
+            let grid = BingoWinGrid[bgo];
+            if (grid.includes(cellId) && setup[cellId].stamped) {
+              status = 'bingo'
+            }
+          })
+          if (state.bingoCard.bingos?.includes('bo')) {
+            status = 'blackout'
+          }
+          items.push(
+            <BingoCellButton 
+              stamped={status} 
+              onClick={() => HandleStamp(cellId, !setup[cellId].stamped)}
+              onMouseEnter={() => playCursor()}
+              key={cell+i} 
+              id={cell+i}
+            >
+              {setup[cellId]?.name}
+            </BingoCellButton>
+          )
         }
       })
     }
