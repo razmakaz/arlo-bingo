@@ -9,8 +9,8 @@ export const BingoPage = () => {
 
   return (
     <>
-      <StartForm active={!state.bingoCard?.name} />
-      {state.bingoCard?.name && <BingoCard />}
+      {/* <StartForm active={!state.bingoCard?.name} /> */}
+      {state.bingoCard && <BingoCard />}
     </>
   )
 }
