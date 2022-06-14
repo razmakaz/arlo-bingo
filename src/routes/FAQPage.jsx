@@ -154,8 +154,8 @@ const FAQData = [
     </QuestionSegment>,
     a: <>
       <p>
-        I use Google Analytics to track very basic engagement statistics like the name you enter at the 
-        beginning, Page Views, Page Loads, initializations, clicks on the bingo card, card resets,
+        I use Google Analytics to track very basic engagement statistics like the Page Views, Page Loads, 
+        initializations, clicks on the bingo card, card resets,
         wins, etc. There are some things that Google tracks automatically that I have no control over, 
         like what area of the world you're generally in. So if you don't want that tracked, use 
         a <a target="_blank" href="https://duckduckgo.com/?q=vpn">VPN</a> or <a target="_blank" href="https://duckduckgo.com/?q=i2p">I2P</a>.

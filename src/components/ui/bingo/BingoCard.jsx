@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from "react"
+import { useContext, useState } from "react"
 import styled, { css, keyframes } from "styled-components"
 import { AppState } from "../../../App"
 import ArloBadge from '../../../media/images/arlo-badge.svg';
@@ -7,17 +7,13 @@ import { Button } from "../buttons/button";
 import useSound from '../../hooks/useSound';
 import StampSound from '../../../media/sounds/TP_Heart.wav';
 import UnstampSound from '../../../media/sounds/TP_ItemMenu_Info_Back.wav';
-import BingoSound from '../../../media/sounds/BOTW_Fanfare_SmallItem.wav';
+import BingoSound from '../../../media/sounds/TP_Fanfare_GoldenBug.wav';
 import BlackoutSound from '../../../media/sounds/BOTW_Fanfare_HeartContainer.wav'
-import CursorSound from '../../../media/sounds/TP_ItemMenu_Cursor.wav';
+import CursorSound from '../../../media/sounds/WW_PauseMenu_Cursor.wav';
 import { BingoWinGrid } from "../../../data/BingoWinGrid";
 
 const Container = styled.div`
-  position: absolute;
-  top: 0; 
-  left: 0; 
-  right: 0; 
-  bottom: 0;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -61,17 +57,16 @@ const BingoCardFront = styled.div`
 `
 
 const BingoCell = styled.div`
-  width: max(5vw, 8px);
-  height: max(5vw, 8px);
+  width: 100px;
+  height: 100px;
   font-weight: bold;
   padding: 8px;
-  font-size: max(0.75vw, 8px);
+  font-size: 14px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: var(--border-radius);
   border: 1px solid var(--primary-800);
-  box-shadow: 0 0 3px var(--primary-800);
+  box-shadow: 0 0 3px var(--maskbg);
   user-select: none;
 `
 
@@ -96,7 +91,7 @@ const BlackoutAnim = keyframes`
 const BingoCellButton = styled(BingoCell)`
   position: relative;
   cursor: pointer;
-  transition: all 222ms;
+  transition: all 111ms;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -104,17 +99,20 @@ const BingoCellButton = styled(BingoCell)`
   background: var(${p => 
     p.stamped === 'blackout' ? '--green-700' : 
     p.stamped === 'bingo' ? '--yellow-700' :
-    p.stamped === 'stamped' ? '--cyan-700' : 
+    p.stamped === 'stamped' ? '--primary-700' : 
     '--primary-900'  
   });
 
+  border-radius: ${p => p.stamped !== 'none' ? '4px' : '16px'};
+
   &:hover {
-    box-shadow: 0 0 8px var(--primary-800);
+    box-shadow: 0 2px 8px var(--maskbg);
+    border-radius: 4px;
     transform: scale(1.05);
   }
 
   &:active {
-    box-shadow: 0 0 8px var(--primary-800);
+    box-shadow: 0 0 8px var(--gray-800);
     transform: scale(0.9);
   }
 
@@ -155,7 +153,11 @@ const BingoCardContainer = styled.div`
   border-radius: var(--border-radius);
   transform-style: preserve-3d;
   transition: all 555ms;
-  transform: perspective(1000px) rotate3d(${p => p.cardState === 'ready' ? '0, 0, 0, 0deg' : '0.1, 1, 0.1, -180deg'});
+  transform: 
+    perspective(1000px) 
+    rotate3d(${p => p.cardState === 'ready' ? '0, 0, 0, 0deg' : '0.1, 1, 0.1, -180deg'})
+    scale(${p => p.cardState === 'ready' ? 1 : 0.7})
+  ;
 
   & ${BingoCardFront} {
     backface-visibility: hidden;
