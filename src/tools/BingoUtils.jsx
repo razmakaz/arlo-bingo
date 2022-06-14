@@ -2,6 +2,7 @@ import { BingoLayout } from "../data/BingoLayout";
 import { Predictions } from "../data/Predictions";
 
 export const GenerateNewBingoCard = () => {
+
   let predictions = [...Predictions];
   let layout = {...BingoLayout};
 
@@ -12,7 +13,7 @@ export const GenerateNewBingoCard = () => {
     if (cell === 'c3') {
       layout[cell] = {
         name: 'Free Space',
-        stamped: false,
+        stamped: true,
       }
       return;
     };
@@ -38,6 +39,8 @@ export const GenerateNewBingoCard = () => {
     let { name } = pick;
     layout[cell] = { name, stamped: false };
   })
+
+  window.dataLayer.push({"issue_new_card": { value: JSON.stringify(layout)}});
 
   return layout;
  

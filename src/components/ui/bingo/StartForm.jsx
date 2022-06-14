@@ -73,6 +73,8 @@ export const StartForm = ({ active }) => {
       bingoCard.name = nameInput;
     }
 
+    window.dataLayer.push({"name_entered": { value: bingoCard.name }});
+
     setState({...state, bingoCard});
 
     SaveBingoCard(bingoCard);

@@ -8,6 +8,7 @@ export const IntroModal = () => {
   const [state, setState] = useContext(AppState);
 
   const HandleNeat = () => {
+    window.dataLayer.push({"close_intro": { value: true}});
     setState({...state, showingIntroModal: false});
   }
 
@@ -38,8 +39,7 @@ export const IntroModal = () => {
       </p>
       <ul>
         <li>
-          Watch Nintendo's E3 Direct (the rumors are that it's
-          going to be Wednesday, June 15th, but currently, it's not confirmed) or;
+          Watch Nintendo's E3 Direct () or;
         </li>
         <li>
           Watch Arlo's recap of the Direct when it comes out.

@@ -166,6 +166,7 @@ export const Modal = ({
   const HandleDisable = () => setState(prev => {
     let stx = {...prev};
     stx.config.disableIntroModal = !disableIntroModal;
+    window.dataLayer.push({"disable_intro": { value: true }});
     SaveBingoConfig(stx.config);
     return stx;
   })

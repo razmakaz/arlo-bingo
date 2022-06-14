@@ -10,6 +10,7 @@ export const InitializeBingoCard = () => {
     data = {
       name: '',
       bingoCard: GenerateNewBingoCard(),
+      bingos: [],
     }
     SaveBingoCard(data);
   }
@@ -39,6 +40,8 @@ export const SaveBingoConfig = (data) => localStorage[BingoConfig] = JSON.string
 export const ClearBingoConfig = () => delete localStorage[BingoConfig];
 
 export const ClearAllData = () =>  {
+  window.dataLayer.push({"data_reset": {value: true}});
+
   ClearBingoCard();
   ClearBingoConfig();
   window.location.reload();
