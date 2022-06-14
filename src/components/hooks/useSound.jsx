@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react"
  * @param {*} options { volume, pitch }
  * @returns 
  */
-const useSound = (file, volume = 0.1) => {
+const useSound = (file, volume = 0.5) => {
 
   let soundRef = useRef(null);
   let [isPlaying, setPlaying] = useState(false);
