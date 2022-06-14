@@ -39,7 +39,7 @@ export const IntroModal = () => {
       </p>
       <ul>
         <li>
-          Watch Nintendo's E3 Direct () or;
+          Watch Nintendo's E3 Direct (currently not officially announced) or;
         </li>
         <li>
           Watch Arlo's recap of the Direct when it comes out.
