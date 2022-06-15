@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import styled, { css, keyframes } from "styled-components"
 import { AppState } from "../../../App"
 import ArloBadge from '../../../media/images/arlo-badge.svg';
@@ -10,13 +10,20 @@ import UnstampSound from '../../../media/sounds/TP_ItemMenu_Info_Back.wav';
 import BingoSound from '../../../media/sounds/TP_Fanfare_GoldenBug.wav';
 import BlackoutSound from '../../../media/sounds/BOTW_Fanfare_HeartContainer.wav'
 import CursorSound from '../../../media/sounds/WW_PauseMenu_Cursor.wav';
+import StartSound from '../../../media/sounds/TP_Letters_Page.wav';
 import { BingoWinGrid } from "../../../data/BingoWinGrid";
+import { ScoreKeeper } from "./ScoreKeeper";
 
 const Container = styled.div`
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  zoom: ${p => p.zoom};
+
+  @media (max-width: 767px) {
+    height: auto;
+  }
 `
 
 const BingoCardOuterWrapper = styled.div`
@@ -25,8 +32,6 @@ const BingoCardOuterWrapper = styled.div`
   border-radius: 3px;
   transform-style: preserve-3d;
   box-shadow: 0 0 6px var(--maskbg);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 `
 
 const BingoCardBack = styled.div`
@@ -57,8 +62,8 @@ const BingoCardFront = styled.div`
 `
 
 const BingoCell = styled.div`
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   font-weight: bold;
   padding: 8px;
   font-size: 14px;
@@ -176,15 +181,36 @@ export const BingoCard = () => {
 
   const [state, setState] = useContext(AppState);
   const [cardState, setCardState] = useState('show');
+  const [cardZoom, setCardZoon] = useState(1);
 
   const [playStamp] = useSound(StampSound);
   const [playBingo] = useSound(BingoSound);
   const [playBlackout] = useSound(BlackoutSound);
   const [playCursor] = useSound(CursorSound);
   const [playUnstamp] = useSound(UnstampSound);
+  const [playStart] = useSound(StartSound);
 
   const cellsLetters = ['B','I','N','G','O']
   const cellsDataLetters = ['a', 'b', 'c', 'd', 'e'];
+
+  useEffect(() => {
+    let rso = new ResizeObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.contentRect) {
+          // Card Size: 570 * 678
+          let heightScale = Math.min(1, entry.contentRect.height / 678);
+          let widthScale = Math.min(1, entry.contentRect.width / 570);
+          setCardZoon(Math.min(heightScale, widthScale));
+        }
+      })  
+    });
+
+    rso.observe(document.querySelector('#root'), {})
+
+    return () => {
+      rso.disconnect();
+    }
+  }, []);
 
   const HandleStamp = (cell, value) => {
 
@@ -299,14 +325,24 @@ export const BingoCard = () => {
     return items;
   }
 
+  const HandleStart = () => {
+    playStart()
+    setCardState('ready')
+  }
+
   return (
-    <Container>
+    <Container zoom={cardZoom}>
+      <ScoreKeeper />
       <BingoCardTransitionContainer cardState={cardState} >
         <BingoCardContainer cardState={cardState} >
           <BingoCardOuterWrapper>
             <BingoCardBack>
               <BadgeBackground src={ArloBadge} />
-              <Button color='primary' onClick={() => setCardState('ready')}>LET'S GO!</Button>
+              <Button 
+                style={{transform: 'scale(2)', marginTop: '44px'}} 
+                color='primary' 
+                onClick={HandleStart}
+              >LET'S GO!</Button>
             </BingoCardBack>
             <BingoCardFront>
               {GetGrid()}
