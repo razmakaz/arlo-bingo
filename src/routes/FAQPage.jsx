@@ -237,7 +237,7 @@ export const FAQPage = () => {
           />
         </SearchWrapper>
         {FAQData.map((q, i) => (
-          <QuestionContainer className={'question-container'} data-id={q.id}>
+          <QuestionContainer key={i} className={'question-container'} data-id={q.id}>
             <QuestionWrapper data-id={q.id} key={q.id+'-q'}>{q.q}</QuestionWrapper>
             <AnswerWrapper data-id={q.id} key={q.id+'-a'}>{q.a}</AnswerWrapper>
           </QuestionContainer>
